@@ -1,3 +1,4 @@
+import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view'
 import React, { useEffect, useState, useRef, createRef } from 'react'
 import { View, Image, BackHandler, Dimensions, Modal, StyleSheet, Animated, Platform, TouchableOpacity, ImageBackground } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
