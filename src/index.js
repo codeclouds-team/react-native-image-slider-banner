@@ -163,12 +163,12 @@ export const ImageSlider = ({
                                     bindToBorders={true}
                                     pinchToZoomOutSensitivity={0}
                                     onPanResponderEnd={() => zoomableViewRef.current.zoomTo(1)}
-                                    contentWidth={Dimensions.get('screen').width}
+                                    contentWidth={Dimensions.get('screen').width}   
                                     contentHeight={400}
-                                >
+                                    >
                                     <Image
                                         source={localImg ? item.img : { uri: item.img }}
-                                        style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
+                                        style={[styles.previewImageStyle, previewImageStyle]}
                                     />
                                 </ReactNativeZoomableView>
                             </View>
