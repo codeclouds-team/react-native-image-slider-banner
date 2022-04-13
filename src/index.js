@@ -151,21 +151,24 @@ export const ImageSlider = ({
                         return (
                             <View
                                 style={[styles.previewImageContainerStyle, previewImageContainerStyle]}>
+                                <TouchableOpacity onPress={() => {
+                                    setSelectedIndex(index)
+                                    setImageViewer(!imageViewer)
+                                }} style={{ position: 'absolute', top: Os == "ios" ? 30 : 5, left: 5 }}>
+                                    <Icon onPress={() => setImageViewer(!imageViewer)} name="close" size={34} color={closeIconColor} />
+                                </TouchableOpacity>
                                 <ReactNativeZoomableView
                                     ref={zoomableViewRef}
                                     initialZoom={1}
                                     bindToBorders={true}
                                     pinchToZoomOutSensitivity={0}
-                                    onPanResponderEnd={() => zoomableViewRef.current.zoomTo(1)}>
-                                    <TouchableOpacity onPress={() => {
-                                        setSelectedIndex(index)
-                                        setImageViewer(!imageViewer)
-                                    }} style={{ position: 'absolute', top: Os == "ios" ? 30 : 5, left: 5 }}>
-                                        <Icon onPress={() => setImageViewer(!imageViewer)} name="close" size={34} color={closeIconColor} />
-                                    </TouchableOpacity>
+                                    onPanResponderEnd={() => zoomableViewRef.current.zoomTo(1)}
+                                    contentWidth={Dimensions.get('screen').width}
+                                    contentHeight={400}
+                                >
                                     <Image
                                         source={localImg ? item.img : { uri: item.img }}
-                                        style={[styles.previewImageStyle, previewImageStyle]}
+                                        style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
                                     />
                                 </ReactNativeZoomableView>
                             </View>
