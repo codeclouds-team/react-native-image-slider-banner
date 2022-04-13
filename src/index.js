@@ -45,6 +45,7 @@ export const ImageSlider = ({
     const [currentIndex, setCurrentIndex] = useState(0)
     const slider = useRef(null)
     const zoomableViewRef = createRef();
+    const animatedFlatListRef = createRef();
 
     const onViewRef = React.useRef(({ viewableItems }) => {
         // Use viewable items in state or as intended
@@ -130,6 +131,7 @@ export const ImageSlider = ({
 
                 <Animated.FlatList
                     data={data}
+                    ref={animatedFlatListRef}
                     keyExtractor={(_, index) => index.toString()}
                     onScroll={Animated.event(
                         [{ nativeEvent: { contentOffset: { x: scrollX } } }],
@@ -161,6 +163,8 @@ export const ImageSlider = ({
                                     ref={zoomableViewRef}
                                     initialZoom={1}
                                     bindToBorders={true}
+                                    maxZoom={10}
+                                    onPanResponderMove={animatedFlatListRef.current.scrollEnabled = false}
                                     pinchToZoomOutSensitivity={0}
                                     onPanResponderEnd={() => zoomableViewRef.current.zoomTo(1)}
                                     contentWidth={Dimensions.get('screen').width}   
