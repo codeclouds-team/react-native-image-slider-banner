@@ -43,9 +43,22 @@ export const ImageSlider = ({
     const [selectedIndex, setSelectedIndex] = useState(0)
     const [imageViewer, setImageViewer] = useState(false)
     const [currentIndex, setCurrentIndex] = useState(0)
+    const [scrollEnabled, setScrollEnabled] = useState(false)
     const slider = useRef(null)
     const zoomableViewRef = createRef();
-    const animatedFlatListRef = createRef();
+
+    const handleDisableZoomOnMove = (event, gestureState, zoomableViewEventObject) => {
+        let activeTouches = event.touchHistory.numberActiveTouches;
+        setScrollEnabled(false);
+        if (activeTouches == 2) {
+            setScrollEnabled(false)
+        } else {
+            zoomableViewRef.current.moveTo(zoomableViewEventObject.originalPageX,zoomableViewEventObject.originalPageY)
+            zoomableViewRef.current.zoomTo(1)
+            setScrollEnabled(true)
+        }
+    }
+
 
     const onViewRef = React.useRef(({ viewableItems }) => {
         // Use viewable items in state or as intended
@@ -131,7 +144,6 @@ export const ImageSlider = ({
 
                 <Animated.FlatList
                     data={data}
-                    ref={animatedFlatListRef}
                     keyExtractor={(_, index) => index.toString()}
                     onScroll={Animated.event(
                         [{ nativeEvent: { contentOffset: { x: scrollX } } }],
@@ -140,8 +152,9 @@ export const ImageSlider = ({
                     ListEmptyComponent
                     horizontal
                     pagingEnabled
+                    scrollEnabled={scrollEnabled}
                     initialScrollIndex={selectedIndex}
-                    pinchGestureEnabled={true}
+                    pinchGestureEnabled={false}
                     onScrollToIndexFailed={info => {
                         const wait = new Promise(resolve => setTimeout(resolve, 500));
                         wait.then(() => {
@@ -163,13 +176,13 @@ export const ImageSlider = ({
                                     ref={zoomableViewRef}
                                     initialZoom={1}
                                     bindToBorders={true}
-                                    maxZoom={10}
-                                    onPanResponderMove={animatedFlatListRef.current.scrollEnabled = false}
-                                    pinchToZoomOutSensitivity={0}
-                                    onPanResponderEnd={() => zoomableViewRef.current.zoomTo(1)}
-                                    contentWidth={Dimensions.get('screen').width}   
-                                    contentHeight={400}
-                                    >
+                                    zoomEnabled={!scrollEnabled}    
+                                    minZoom={1}  
+                                    maxZoom={2}                              
+                                    onZoomEnd={() => zoomableViewRef.current.zoomTo(1)}
+                                    onPanResponderMove={(event, gestureState, zoomableViewEventObject) => handleDisableZoomOnMove(event, gestureState, zoomableViewEventObject)}
+                                    onPanResponderEnd={() => zoomableViewRef.current.zoomTo(1)}  
+                                >
                                     <Image
                                         source={localImg ? item.img : { uri: item.img }}
                                         style={[styles.previewImageStyle, previewImageStyle]}
@@ -199,6 +212,10 @@ export const ImageSlider = ({
                 snapToInterval={width}
                 decelerationRate="fast"
                 pinchGestureEnabled={true}
+                maximumZoomScale={2}
+                minimumZoomScale={1}
+                bouncesZoom={false}
+                zoomScale={1}
                 showsHorizontalScrollIndicator={false}
                 onViewableItemsChanged={onViewRef.current}
                 viewabilityConfig={viewConfigRef.current}
