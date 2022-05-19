@@ -1,2 +1,2 @@
-import { ImageSlider } from './src'
-export { ImageSlider }
+import { ImageSlider, changeSlide } from './src'
+export { ImageSlider, changeSlide }
